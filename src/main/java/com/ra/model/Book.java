@@ -1,5 +1,7 @@
 package com.ra.model;
 
+import org.springframework.validation.annotation.Validated;
+
 import javax.persistence.*;
 
 @Entity
@@ -15,15 +17,18 @@ public class Book {
     private float price;
     @Column(name = "book_status")
     private boolean status;
+    @Column(name = "book_image")
+    private String image;
 
     public Book() {
     }
 
-    public Book(int bookId, String bookName, float price, boolean status) {
+    public Book(int bookId, String bookName, float price, boolean status, String image) {
         this.bookId = bookId;
         this.bookName = bookName;
         this.price = price;
         this.status = status;
+        this.image = image;
     }
 
     public int getBookId() {
@@ -56,5 +61,13 @@ public class Book {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

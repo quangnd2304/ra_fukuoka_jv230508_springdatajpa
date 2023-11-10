@@ -37,6 +37,12 @@ dependencies {
     implementation group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.6.15.Final'
     // https://mvnrepository.com/artifact/org.springframework.data/spring-data-jpa
     implementation group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.7.2'
+    // https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload
+    implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
+    // https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
+    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '9.1.0'
+
+
 
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")

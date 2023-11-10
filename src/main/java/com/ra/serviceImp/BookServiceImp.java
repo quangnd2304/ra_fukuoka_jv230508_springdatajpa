@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,89 +18,31 @@ public class BookServiceImp implements BookService {
     private BookRepository bookRepository;
 
     @Override
-    public List<Book> findAll() {
-        return bookRepository.findAll();
+    public List<Book> findBook(String bookName, int page, int size, String direction, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size,
+                direction.equals("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC,
+                sortBy);
+        return bookRepository.findByBookName(bookName, pageable).getContent();
     }
 
     @Override
-    public Book findById(int bookId) {
-        return bookRepository.findById(bookId).get();
+    public List<Integer> countPage(String bookName, int size) {
+        int cnt = bookRepository.countBookByBookNameContains(bookName);
+        List<Integer> listPage = new ArrayList<>();
+        for (int i = 0; i < (int)Math.ceil((double) cnt/(double) size); i++) {
+            listPage.add(i+1);
+        }
+        return listPage;
     }
 
     @Override
-    public List<Book> findByName(String bookName) {
-        return bookRepository.findByBookNameContains(bookName);
-    }
-
-    @Override
-    public boolean saveOrUpdate(Book book) {
+    public boolean save(Book book) {
         try {
-            bookRepository.save(book);
+            Book bookNew = bookRepository.save(book);
             return true;
-        } catch (Exception ex) {
+        }catch (Exception ex){
             ex.printStackTrace();
         }
         return false;
-    }
-
-    @Override
-    public boolean delete(int bookId) {
-        try {
-            bookRepository.delete(findById(bookId));
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return false;
-    }
-
-    @Override
-    public List<Book> findAllAndPagging(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        List<Book> listBook = bookRepository.findAll(pageable).getContent();
-        return listBook;
-    }
-
-    @Override
-    public List<Book> findAllAndSorting(String sortDir, String sortBy) {
-        if (sortDir.equals("bookName")) {
-            if (sortBy.equals("ASC")) {
-                return bookRepository.findAll(Sort.by("bookName").ascending());
-            } else {
-                return bookRepository.findAll(Sort.by("bookName").descending());
-            }
-        } else {
-            if (sortBy.equals("ASC")) {
-                return bookRepository.findAll(Sort.by("price").ascending());
-            } else {
-                return bookRepository.findAll(Sort.by("price").descending());
-            }
-        }
-    }
-
-    @Override
-    public List<Book> findAllAndPagging_Sorting(int page, int size, String sortDir, String sortBy) {
-        if (sortDir.equals("bookName")) {
-            if (sortBy.equals("ASC")) {
-                Pageable pageable = PageRequest.of(page, size, Sort.by("bookName").ascending());
-                return bookRepository.findAll(pageable).getContent();
-            } else {
-                Pageable pageable = PageRequest.of(page, size, Sort.by("bookName").descending());
-                return bookRepository.findAll(pageable).getContent();
-            }
-        } else {
-            if (sortBy.equals("ASC")) {
-                Pageable pageable = PageRequest.of(page, size, Sort.by("price").ascending());
-                return bookRepository.findAll(pageable).getContent();
-            } else {
-                Pageable pageable = PageRequest.of(page, size, Sort.by("price").descending());
-                return bookRepository.findAll(pageable).getContent();
-            }
-        }
-    }
-
-    @Override
-    public long countBook() {
-        return bookRepository.count();
     }
 }
